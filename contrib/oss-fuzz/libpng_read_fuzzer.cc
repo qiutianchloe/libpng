@@ -185,6 +185,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
   png_set_scale_16(png_handler.png_ptr);
   png_set_tRNS_to_alpha(png_handler.png_ptr);
   png_set_rgb_to_gray(png_handler.png_ptr, 1, 6968 / 32768., 23434 / 32768.);
+  
+  png_color_16 back;
+    // use a default value
+  png_uint_16 default_red = 6968;
+  png_uint_16 default_green = 23434;
+  png_uint_16 default_blue = 2366;
+  back.red = default_red;
+  back.green = default_green;
+  back.blue = default_blue;
+  png_set_background(png_handler.png_ptr, &back, PNG_BACKGROUND_GAMMA_FILE, 1, 1.0);
 
   int passes = png_set_interlace_handling(png_handler.png_ptr);
 

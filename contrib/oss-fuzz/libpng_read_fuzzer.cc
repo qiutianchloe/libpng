@@ -180,12 +180,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
   }
 
   // Set several transforms that browsers typically use:
+  png_set_gray_to_rgb(png_handler.png_ptr);
   png_set_expand(png_handler.png_ptr);
   png_set_packing(png_handler.png_ptr);
   png_set_scale_16(png_handler.png_ptr);
   png_set_tRNS_to_alpha(png_handler.png_ptr);
-  png_set_rgb_to_gray(png_handler.png_ptr, 1, 6968 / 32768., 23434 / 32768.);
-  
 
   int passes = png_set_interlace_handling(png_handler.png_ptr);
 
@@ -217,8 +216,85 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
   }
 
   image.format = PNG_FORMAT_RGBA;
+
   std::vector<png_byte> buffer(PNG_IMAGE_SIZE(image));
   png_image_finish_read(&image, NULL, buffer.data(), 0, NULL);
+  
+  png_image_free(&image);
+
+
+  memset(&image, 0, (sizeof image));
+  image.version = PNG_IMAGE_VERSION;
+
+  if (!png_image_begin_read_from_memory(&image, data, size)) {
+    return 0;
+  }
+
+  image.format = PNG_FORMAT_GRAY;
+  buffer.resize(PNG_IMAGE_SIZE(image));
+  png_image_finish_read(&image, NULL, buffer.data(), 0, NULL);
+  
+  png_image_free(&image);
+
+
+  // png_image image;
+  memset(&image, 0, (sizeof image));
+  image.version = PNG_IMAGE_VERSION;
+
+  if (!png_image_begin_read_from_memory(&image, data, size)) {
+    return 0;
+  }
+
+  image.format = PNG_FORMAT_BGR;
+  buffer.resize(PNG_IMAGE_SIZE(image));
+  png_image_finish_read(&image, NULL, buffer.data(), 0, NULL);
+  
+  png_image_free(&image);
+
+
+  //png_image image;
+  memset(&image, 0, (sizeof image));
+  image.version = PNG_IMAGE_VERSION;
+
+  if (!png_image_begin_read_from_memory(&image, data, size)) {
+    return 0;
+  }
+
+  image.format = PNG_FORMAT_BGRA_COLORMAP;
+  buffer.resize(PNG_IMAGE_SIZE(image));
+  png_image_finish_read(&image, NULL, buffer.data(), 0, NULL);
+  
+  png_image_free(&image);
+
+
+  //png_image image;
+  memset(&image, 0, (sizeof image));
+  image.version = PNG_IMAGE_VERSION;
+
+  if (!png_image_begin_read_from_memory(&image, data, size)) {
+    return 0;
+  }
+
+  image.format = PNG_FORMAT_LINEAR_RGB_ALPHA;
+  buffer.resize(PNG_IMAGE_SIZE(image));
+  png_image_finish_read(&image, NULL, buffer.data(), 0, NULL);
+  
+  png_image_free(&image);
+
+//png_image image;
+  memset(&image, 0, (sizeof image));
+  image.version = PNG_IMAGE_VERSION;
+
+  if (!png_image_begin_read_from_memory(&image, data, size)) {
+    return 0;
+  }
+
+  image.format = PNG_FORMAT_LINEAR_Y;
+  buffer.resize(PNG_IMAGE_SIZE(image));
+  png_image_finish_read(&image, NULL, buffer.data(), 0, NULL);
+  
+  png_image_free(&image);
+
 #endif
 
   return 0;
